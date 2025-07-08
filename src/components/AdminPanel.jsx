@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 
 function AdminPanel() {
     const [formularios, setFormularios] = useState([]);
+    const { usuario } = useAuth();
 
     useEffect(() => {
+        if (!usuario) return;
+
         const carregarFormulario = async () => {
             const colRef = collection(db, "formularios");
             const snapshot = await getDocs(colRef);
 
             const lista = await Promise.all(snapshot.docs.map(async (docSnap) => {
                 const dados = docSnap.data();
+
+                if (dados.criadoPor !== usuario.uid) return null;
 
                 let totalRespostas = 0;
 
@@ -31,11 +37,11 @@ function AdminPanel() {
                 };
             }));
 
-            setFormularios(lista);
+            setFormularios(lista.filter(Boolean));
         };
 
         carregarFormulario();
-    }, []);
+    }, [usuario]);
 
     return (
         <div>

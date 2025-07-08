@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { db } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function FormBuilder() {
     const [titulo, setTitulo] = useState("");
     const [perguntas, setPerguntas] = useState([""]);
     const navigate = useNavigate();
+    const { usuario } = useAuth();
 
     const adicionarPergunta = () => {
         setPerguntas([...perguntas, ""]);
@@ -24,9 +26,13 @@ function FormBuilder() {
             return;
         }
 
+        if (!usuario) return;
+
         const docRef = await addDoc(collection(db, "formularios"), {
             titulo,
             perguntas,
+            criadoPor: usuario.uid,
+            nomeCriador: usuario.displayName,
             criadoEm: serverTimestamp(),
         });
 
