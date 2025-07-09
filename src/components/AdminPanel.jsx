@@ -20,11 +20,11 @@ function AdminPanel() {
 
                 if (dados.criadoPor !== usuario.uid) return null;
 
-                let totalRespostas = 0;
+                let respostas = [];
 
                 try {
                     const respostasSnap = await getDocs(collection(db, `formularios/${docSnap.id}/respostas`));
-                    totalRespostas = respostasSnap.size;
+                    respostas = respostasSnap.docs.map((resp) => resp.data());
                 } catch (error) {
                     console.error("Erro ao buscar respostas:", error);
                 }
@@ -33,7 +33,7 @@ function AdminPanel() {
                     id: docSnap.id,
                     titulo: dados.titulo,
                     perguntas: dados.perguntas,
-                    totalRespostas,
+                    respostas,
                 };
             }));
 
@@ -56,9 +56,29 @@ function AdminPanel() {
                             <br />
                             <span>{form.perguntas.length} pergunta(s)</span>
                             <br />
-                            <span>{form.totalRespostas} resposta(s)</span>
+                            <span>{form.respostas.length} resposta(s)</span>
                             <br />
                             <Link to={`/form/${form.id}`}>Ver formulário</Link>
+
+                            {form.respostas.length > 0 && (
+                                <div>
+                                    <h4>Respostas:</h4>
+                                    <ul>
+                                        {form.respostas.map((resp, i) => (
+                                            <li key={i} style={{ marginBottom: "10px" }}>
+                                                <strong>{resp.nomeRespondente || "Anônimo"}:</strong>
+                                                <ul>
+                                                    {resp.respostas.map((r, j) => (
+                                                        <li key={j}>
+                                                            <em>{j + 1}º) {form.perguntas[j]}:</em> {r}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
                         </li>
                     ))}
                 </ul>

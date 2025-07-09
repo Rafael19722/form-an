@@ -42,23 +42,23 @@ function FormBuilder() {
     return (
         <div>
             <h2>Criar Formulário</h2>
-            <input 
-                placeholder="Título do formulário"
-                value={titulo}
-                onChange={(e) => setTitulo(e.target.value)}
-            />
-            <h4>Perguntas:</h4>
-            {perguntas.map((pergunta, index) => (
-                <input
-                    key={index}
-                    placeholder={`Pergunta ${index + 1}`}
-                    value={pergunta}
-                    onChange={(e) => atualizarPergunta(index, e.target.value)}    
+                <input 
+                    placeholder="Título do formulário"
+                    value={titulo}
+                    onChange={(e) => setTitulo(e.target.value)}
                 />
-            ))}
-            <button onClick={adicionarPergunta}>+ Adicionar pergunta</button>
-            <br />
-            <button onClick={salvarFormulario}>Salvar e Gerar Link</button>
+                <h4>Perguntas:</h4>
+                {perguntas.map((pergunta, index) => (
+                    <input
+                        key={index}
+                        placeholder={`Pergunta ${index + 1}`}
+                        value={pergunta}
+                        onChange={(e) => atualizarPergunta(index, e.target.value)}    
+                    />
+                ))}
+                <button onClick={adicionarPergunta}>+ Adicionar pergunta</button>
+                <br />
+                <button onClick={salvarFormulario}>Salvar e Gerar Link</button>
         </div>
     );
 
